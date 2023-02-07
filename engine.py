@@ -2,11 +2,10 @@ import torch
 import time
 from tqdm import tqdm
 import copy
+import wandb
 
 def train_model(model, dataloaders, dataset_sizes, criterion, optimizer, scheduler, device, num_epochs=25):
 
-    training_history = {'accuracy':[],'loss':[]}
-    validation_history = {'accuracy':[],'loss':[]}
 
     since = time.time()
 
@@ -46,6 +45,7 @@ def train_model(model, dataloaders, dataset_sizes, criterion, optimizer, schedul
 
                     # backward + optimize only if in training phase
                     if phase == 'train':
+                        wandb.log({"train_loss": loss})
                         loss.backward()
                         optimizer.step()
 
@@ -59,11 +59,13 @@ def train_model(model, dataloaders, dataset_sizes, criterion, optimizer, schedul
             epoch_acc = running_corrects.double() / dataset_sizes[phase]
             
             if phase == 'train':
-                training_history['accuracy'].append(epoch_acc)
-                training_history['loss'].append(epoch_loss)
+                wandb.log({"train_epoch_loss": epoch_loss})
+                wandb.log({"train_acc": epoch_acc})
+
             elif phase == 'val':
-                validation_history['accuracy'].append(epoch_acc)
-                validation_history['loss'].append(epoch_loss)
+                wandb.log({"val_epoch_loss": epoch_loss})
+                wandb.log({"val_acc": epoch_acc})
+
 
             print('{} Loss: {:.4f} Acc: {:.4f}'.format(
                 phase, epoch_loss, epoch_acc))

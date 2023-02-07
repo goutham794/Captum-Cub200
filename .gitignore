@@ -1,2 +1,4 @@
 venv/
 CUB_200_2011/
+__pycache__/
+wandb/
