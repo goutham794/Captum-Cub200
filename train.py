@@ -4,9 +4,8 @@ import torch
 import torch.nn as nn
 import wandb
 
-from model import CNN_Model
+from cnn_model import CNN_Model
 import config
-from alex_net_model import AlexNet
 from engine import train_model
 
 def get_classes(data_dir):
